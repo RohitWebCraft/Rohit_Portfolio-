@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rohit Choudhari (Rohit Sir) | Master Teacher and Learning-Game Builder</title>
+<meta name="description" content="Rohit Choudhari (Rohit Sir) is a Master Teacher at Freedom Employability Academy, Panna, who builds English quizzes and learning games, including Rohit Sir English Quest.">
+<meta name="theme-color" content="#18231f">
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#18231f;
+    --board-hi:#22322d;
+    --chalk:#f2efe4;
+    --dim:#aeb8ae;
+    --yellow:#f4d56e;
+    --blue:#8cc8ea;
+    --good:#93d9a0;
+    --bad:#f2917c;
+    --rule:rgba(242,239,228,.16);
+    --card:rgba(242,239,228,.04);
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{
+    scroll-behavior:smooth;
+    background:
+      radial-gradient(1100px 640px at 10% -10%,var(--board-hi),transparent 62%),
+      radial-gradient(800px 520px at 105% 45%,rgba(140,200,234,.07),transparent 60%),
+      var(--board);
+    background-attachment:fixed;
+  }
+  body{margin:0;color:var(--chalk);font:400 18px/1.65 "Hind",system-ui,sans-serif;overflow-x:hidden}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+  main,footer{position:relative;z-index:1}
+  #dust{position:fixed;inset:0;z-index:0;pointer-events:none}
+  [hidden]{display:none!important}
+  section[id]{scroll-margin-top:72px}
+
+  /* scroll progress + header */
+  .progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:60;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--yellow),var(--blue))}
+  .bar{position:sticky;top:0;z-index:40;background:rgba(24,35,31,.78);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+  .bar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:64px}
+  .brand{font:700 1.35rem "Fraunces",Georgia,serif;color:var(--yellow);text-decoration:none}
+  .bar nav{display:flex;gap:4px}
+  .bar nav a{position:relative;padding:8px 12px;text-decoration:none;color:var(--dim);font-size:.98rem;transition:color .2s}
+  .bar nav a::after{content:"";position:absolute;left:12px;right:12px;bottom:2px;height:2px;background:var(--yellow);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+  .bar nav a:hover,.bar nav a[aria-current="true"]{color:var(--chalk)}
+  .bar nav a:hover::after,.bar nav a[aria-current="true"]::after{transform:scaleX(1)}
+
+  /* reveal on scroll */
+  .anim .rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:var(--d,0s)}
+  .anim .rv.in{opacity:1;transform:none}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding-top:64px;padding-bottom:56px}
+  h1{font:700 clamp(2.7rem,7.2vw,5rem)/1.06 "Fraunces",Georgia,serif;letter-spacing:-.01em;margin:0 0 10px}
+  .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.06em 0 .12em;margin-bottom:-.12em}
+  .ch{display:inline-block}
+  .anim .ch{transform:translateY(112%);animation:rise .8s var(--ease) calc(var(--i)*45ms + 150ms) forwards}
+  .role{font:500 clamp(1.25rem,3vw,1.85rem)/1.4 "Fraunces",Georgia,serif;color:var(--yellow);min-height:1.5em;margin:0 0 18px}
+  .caret{display:inline-block;width:2px;height:1.05em;margin-left:4px;vertical-align:-.15em;background:var(--yellow);animation:blink 1s steps(1) infinite}
+  .lead{color:var(--dim);max-width:34em;margin:0 0 28px}
+  .actions{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;min-height:46px;padding:10px 24px;border-radius:999px;border:2px solid var(--yellow);font:600 1rem "Hind",system-ui,sans-serif;text-decoration:none;color:var(--yellow);background:transparent;cursor:pointer;transition:transform .2s var(--ease),background .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+  .btn:not(.primary):hover{background:rgba(244,213,110,.12)}
+  .btn.primary{background:var(--yellow);color:#1b2623}
+  .btn.small{min-height:40px;padding:6px 18px;font-size:.95rem}
+
+  /* sample quiz */
+  .quiz{background:rgba(34,50,45,.85);border:1px solid var(--rule);border-radius:18px;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .q-title{margin:0 0 14px;color:var(--dim);font-size:.95rem}
+  .q-meta{display:flex;justify-content:space-between;gap:12px;color:var(--dim);font-size:.9rem}
+  .track{height:4px;background:var(--rule);border-radius:4px;margin:10px 0 0;overflow:hidden}
+  #qbar{display:block;height:100%;width:0;background:var(--yellow);transition:width .5s var(--ease)}
+  .q-en{font:500 1.5rem/1.4 "Hind",system-ui,sans-serif;margin:16px 0 4px}
+  .q-hi{color:var(--blue);font-size:.95rem;margin:0 0 16px}
+  .opts{display:grid;gap:10px}
+  .opt{font:inherit;text-align:left;padding:12px 14px;min-height:48px;border-radius:10px;background:transparent;color:var(--chalk);border:2px solid var(--rule);cursor:pointer;transition:border-color .2s,background .2s}
+  .opt:hover:not(:disabled){border-color:var(--yellow)}
+  .opt:disabled{cursor:default;color:var(--chalk)}
+  .anim .opt{animation:optin .45s var(--ease) both;animation-delay:calc(var(--k)*70ms)}
+  .opt.good{border-color:var(--good);background:rgba(147,217,160,.15);animation:pop .4s var(--ease)}
+  .opt.bad{border-color:var(--bad);background:rgba(242,145,124,.15);animation:shake .4s}
+  .explain{min-height:3.4em;margin:14px 0 0;color:var(--dim);font-size:.95rem;line-height:1.5}
+  .q-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
+  .linkbtn{background:none;border:0;color:var(--dim);font:inherit;font-size:.9rem;text-decoration:underline;cursor:pointer;padding:8px 0}
+  .result h2{font-size:1.8rem;margin:0 0 6px}
+  .result p{color:var(--dim);margin:0 0 18px}
+
+  /* stats */
+  .stats ul{display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding:30px 0;list-style:none;border-block:1px solid var(--rule)}
+  .stats li{padding:0 24px;border-left:1px solid var(--rule)}
+  .stats li:first-child{border-left:0;padding-left:0}
+  .stats b{display:block;font:700 clamp(2.2rem,5vw,3.4rem)/1.1 "Fraunces",Georgia,serif;color:var(--yellow);font-variant-numeric:tabular-nums}
+  .stats span{color:var(--dim)}
+
+  /* sections */
+  .blk{padding-top:92px}
+  .sec-head{margin-bottom:34px}
+  h2{font:700 clamp(1.9rem,4.2vw,2.7rem)/1.15 "Fraunces",Georgia,serif;margin:0 0 10px}
+  .sec-head h2::after{content:"";display:block;width:56px;height:3px;margin-top:12px;background:var(--yellow);transition:width .9s var(--ease) .2s}
+  .anim .sec-head:not(.in) h2::after{width:0}
+  .sub{color:var(--dim);max-width:38em;margin:0}
+  h3.sub-h{font:700 1.35rem/1.3 "Fraunces",Georgia,serif;margin:52px 0 18px}
+
+  /* project cards */
+  .cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .cards>li:first-child{grid-column:1/-1}
+  .card{position:relative;overflow:hidden;height:100%;border:1px solid var(--rule);border-radius:18px;padding:28px;background:var(--card);transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s var(--ease),border-color .25s}
+  .card::before{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(244,213,110,.12),transparent 55%);opacity:0;transition:opacity .3s;pointer-events:none}
+  .card:hover{border-color:rgba(244,213,110,.5)}
+  .card:hover::before{opacity:1}
+  .card>*{position:relative}
+  .card h3{font:700 1.55rem/1.25 "Fraunces",Georgia,serif;margin:0 0 6px}
+  .cards>li:first-child .card h3{font-size:clamp(1.8rem,3.8vw,2.3rem)}
+  .meta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;color:var(--dim);font-size:.95rem;margin-bottom:12px}
+  .card p{margin:0 0 16px;max-width:46em}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+  .tags li{border:1px solid var(--rule);border-radius:999px;padding:1px 13px;font-size:.86rem;color:var(--dim)}
+  .foot{margin-top:22px}
+  .live{display:inline-flex;align-items:center;gap:8px;color:var(--good)}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--good);animation:pulse 2.2s infinite}
+
+  /* features */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 40px;list-style:none;margin:0;padding:0}
+  .feats li{position:relative;padding-top:20px}
+  .feats li::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--rule)}
+  .feats li::after{content:"";position:absolute;top:0;left:0;height:2px;width:56px;background:var(--yellow);transition:width .9s var(--ease) .25s}
+  .anim .feats li:not(.in)::after{width:0}
+  .feats strong{display:block;font:700 1.2rem/1.3 "Fraunces",Georgia,serif;margin-bottom:6px}
+  .feats span{color:var(--dim)}
+
+  /* timeline */
+  .timeline{--p:1;position:relative;list-style:none;margin:0;padding:0 0 0 38px}
+  .timeline::before,.timeline::after{content:"";position:absolute;left:7px;top:8px;width:2px}
+  .timeline::before{bottom:8px;background:var(--rule)}
+  .timeline::after{height:calc((100% - 16px)*var(--p));background:linear-gradient(var(--yellow),var(--blue))}
+  .timeline>li{position:relative;padding-bottom:40px}
+  .timeline>li:last-child{padding-bottom:0}
+  .dot{position:absolute;left:-38px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--board);border:2px solid var(--rule);transition:border-color .5s,box-shadow .5s}
+  .timeline>li.in .dot,html:not(.anim) .dot{border-color:var(--yellow);box-shadow:0 0 0 6px rgba(244,213,110,.12)}
+  .when{color:var(--yellow);font-weight:600;font-size:.95rem}
+  .timeline h3{font:700 1.4rem/1.3 "Fraunces",Georgia,serif;margin:2px 0 2px}
+  .org{color:var(--dim);margin:0}
+  .points{margin:12px 0 0;padding-left:1.1em;color:var(--dim);max-width:46em}
+  .points li{margin:5px 0}
+
+  /* education, training, skills */
+  .grid3,.grid2{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+  .grid3{grid-template-columns:repeat(3,1fr)}
+  .grid2{grid-template-columns:repeat(2,1fr)}
+  .edu-card{height:100%;border:1px solid var(--rule);border-radius:16px;padding:24px;background:var(--card)}
+  .edu-card .yr{font:700 2rem/1 "Fraunces",Georgia,serif;color:var(--yellow)}
+  .edu-card strong{display:block;font:700 1.2rem/1.3 "Fraunces",Georgia,serif;margin:10px 0 4px}
+  .edu-card span{display:block;color:var(--dim);font-size:.95rem}
+  .edu-card p{margin:8px 0 0;color:var(--dim);font-size:.95rem}
+  .skills{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0;padding:0}
+  .skills li{border:1px solid var(--rule);border-radius:999px;padding:6px 18px;font-size:.98rem;background:var(--card)}
+
+  /* contact */
+  .contact-box{border:1px solid var(--rule);border-radius:22px;padding:clamp(26px,5vw,52px);background:linear-gradient(135deg,rgba(244,213,110,.08),rgba(140,200,234,.05))}
+  .contact-box .sub{margin-bottom:26px}
+  .where{color:var(--dim);margin:22px 0 0}
+  footer{margin-top:92px;border-top:1px solid var(--rule);padding:26px 0 44px;color:var(--dim);font-size:.95rem}
+
+  @keyframes rise{to{transform:none}}
+  @keyframes blink{50%{opacity:0}}
+  @keyframes optin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes pop{40%{transform:scale(1.03)}}
+  @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(147,217,160,.55)}70%,100%{box-shadow:0 0 0 9px rgba(147,217,160,0)}}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;gap:36px;padding-top:44px}
+    .cards,.grid2{grid-template-columns:1fr}
+    .grid3{grid-template-columns:1fr}
+    .feats{grid-template-columns:1fr 1fr}
+    .blk{padding-top:72px}
+  }
+  @media (max-width:560px){
+    .feats{grid-template-columns:1fr}
+    .stats li{padding:0 12px}
+    .stats li:first-child{padding-left:0}
+    .bar nav a{padding:8px 7px;font-size:.88rem}
+    .bar nav a::after{left:7px;right:7px}
+    .brand{font-size:1.15rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#top" id="brand">Rohit Sir</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#experience-sec">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <div>
+      <h1 id="name"></h1>
+      <p class="role"><span id="role"></span><span class="caret" id="caret" aria-hidden="true"></span></p>
+      <p class="lead rv" id="lead"></p>
+      <div class="actions rv" style="--d:.15s">
+        <a class="btn primary" href="#work">View my work</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="quiz rv" id="demo" style="--d:.3s" aria-label="Sample quiz">
+      <p class="q-title">Try a question from my quizzes</p>
+      <div id="play">
+        <div class="q-meta"><span id="qnum"></span><span id="score"></span></div>
+        <div class="track"><i id="qbar"></i></div>
+        <p class="q-en" id="qen"></p>
+        <p class="q-hi" id="qhi" lang="hi"></p>
+        <div class="opts" id="opts"></div>
+        <p class="explain" id="explain" aria-live="polite"></p>
+        <div class="q-foot">
+          <button class="linkbtn" id="sound" type="button" aria-pressed="true">Sound: on</button>
+          <button class="btn small primary" id="next" type="button" hidden>Next question</button>
+        </div>
+      </div>
+      <div class="result" id="result" hidden>
+        <h2 id="rtitle"></h2>
+        <p>That was a three-question sample. My full quizzes are listed under Selected work.</p>
+        <button class="btn primary" id="again" type="button">Play again</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats wrap" aria-label="Rohit Sir English Quest at a glance">
+    <ul id="stats"></ul>
+  </section>
+
+  <section class="blk wrap" id="work">
+    <div class="sec-head rv">
+      <h2>Selected work</h2>
+      <p class="sub">Web-based quizzes and games I designed and built for my learners. Each one opens in the browser, with nothing to install.</p>
+    </div>
+    <ul class="cards" id="projects"></ul>
+  </section>
+
+  <section class="blk wrap" id="features">
+    <div class="sec-head rv">
+      <h2>How the games help learners</h2>
+      <p class="sub">Every feature comes from real classroom use.</p>
+    </div>
+    <ul class="feats">
+      <li class="rv"><strong>English first, Hindi as support</strong><span>Questions appear in English, with a short Hindi translation beneath for support.</span></li>
+      <li class="rv" style="--d:.08s"><strong>Instant spoken feedback</strong><span>Correct and wrong answers get different spoken phrases and sounds, so practice feels like a game.</span></li>
+      <li class="rv" style="--d:.16s"><strong>Streaks, XP and ranks</strong><span>Daily streaks, experience points and ranks give learners a reason to come back.</span></li>
+      <li class="rv"><strong>Mistakes Notebook</strong><span>Missed questions are saved so learners can revisit them until they get them right.</span></li>
+      <li class="rv" style="--d:.08s"><strong>Verifiable certificates</strong><span>A certificate is awarded after every 10 levels, and a QR code confirms that it is genuine.</span></li>
+      <li class="rv" style="--d:.16s"><strong>Teacher dashboard</strong><span>Each learner's progress syncs to a Google Sheet: levels, stars, XP, rank and last active date.</span></li>
+    </ul>
+  </section>
+
+  <section class="blk wrap" id="experience-sec">
+    <div class="sec-head rv">
+      <h2>Experience</h2>
+      <p class="sub">Teaching English, digital skills and employability skills to learners aged 18 and above.</p>
+    </div>
+    <ol class="timeline" id="experience"></ol>
+  </section>
+
+  <section class="blk wrap" id="education">
+    <div class="sec-head rv">
+      <h2>Education, training and skills</h2>
+    </div>
+    <ul class="grid3" id="edu"></ul>
+    <h3 class="sub-h rv">Training</h3>
+    <ul class="grid2" id="training"></ul>
+    <h3 class="sub-h rv">Skills</h3>
+    <ul class="skills" id="skills"></ul>
+  </section>
+
+  <section class="blk wrap" id="contact">
+    <div class="contact-box rv">
+      <div class="sec-head">
+        <h2>Let's work together</h2>
+      </div>
+      <p class="sub">Need English quizzes, classroom tools or a learning programme built for your learners? Send me a message.</p>
+      <div class="actions" id="contact-actions"></div>
+      <p class="where" id="where"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span id="foot"></span></div>
+</footer>
+
+<noscript><p style="padding:20px;color:#f2efe4">This portfolio needs JavaScript to display its content.</p></noscript>
+
+<script>
+/* ============ Edit your details here ============ */
+const CONFIG = {
+  brand: "Rohit Sir",
+  name: "Rohit Choudhari",
+  roles: ["Master Teacher", "English Facilitator", "Basic Computer Trainer", "Learning-Game Builder"],
+  summary: "I teach English, digital literacy and employability skills to learners aged 18+ at Freedom Employability Academy in Panna, and I build the quizzes and games they practise with. My learners know me as Rohit Sir.",
+  place: "Panna, Madhya Pradesh, India",
+  phone: "917691943998",            // country code first, no +
+  phoneShow: "+91 76919 43998",
+  email: "rohitvermaji3998@gmail.com",
+  github: "https://github.com/RohitWebCraft",
+
+  stats: [
+    { n: 172, suffix: "+", label: "levels in Rohit Sir English Quest" },
+    { n: 860, suffix: "+", label: "practice questions" },
+    { n: 27,  suffix: "",  label: "grammar lesson topics" }
+  ],
+
+  projects: [
+    {
+      title: "Rohit Sir English Quest",
+      when: "Oct 2026",
+      desc: "A level-based English learning game for FEA learners, with 170+ levels and 860+ questions. It includes QR-verified certificates, streaks, XP and ranks, a Mistakes Notebook, a speaking round and a Google Sheets teacher dashboard.",
+      tags: ["FEA learners", "Certificates", "Teacher dashboard", "Installable app"],
+      url: "https://rohitwebcraft.github.io/Rohit-Sir-English-Quest/"
+    },
+    {
+      title: "Rohit Sir English Quiz",
+      when: "Oct 2026",
+      desc: "A day-wise English quiz built for the FEA English Learning Program.",
+      tags: ["Day-wise", "FEA program"],
+      url: "https://rohitwebcraft.github.io/rohit-sir-english-quiz/"
+    },
+    {
+      title: "MFE Quizz",
+      when: "Sep 2026",
+      desc: "An English vocabulary quiz organised by chapter, with Hindi meanings and example sentences.",
+      tags: ["Vocabulary", "Hindi meanings", "Chapter-wise"],
+      url: "https://rohitwebcraft.github.io/MFE-QUIZZ-FEA/"
+    }
+  ],
+
+  experience: [
+    {
+      when: "2026 – Present",
+      title: "Master Teacher",
+      org: "Freedom Employability Academy (FEA), Panna",
+      points: [
+        "Promoted to Master Teacher shortly after completing the Master Teachers Program: Foundation, Part 1 (May 2026).",
+        "Teach learners aged 18+ in English, Digital Literacy and Core Employability Skills at the Mahewa Centre.",
+        "Plan lesson activities, practice materials and speaking tasks, and build quizzes and games for the classroom.",
+        "Keep attendance records and follow up with learners through calls and home visits to support retention."
+      ]
+    },
+    {
+      when: "2025 – 2026",
+      title: "Teacher",
+      org: "Freedom Employability Academy (FEA), Panna",
+      points: [
+        "Moved from Facilitator to Teacher after about six months at FEA.",
+        "Taught English, Digital Literacy and Core Employability Skills at the Itwan Kalan Centre until Sep 2025, then at the Mahewa Centre from Oct 2025."
+      ]
+    },
+    {
+      when: "Nov 2024 – 2025",
+      title: "Facilitator",
+      org: "Freedom Employability Academy (FEA), Panna",
+      points: [
+        "Joined FEA as a Facilitator on 25 Nov 2024, after completing the 53-day Staff Training Program.",
+        "Started at the Itwan Kalan Centre, teaching learners aged 18+."
+      ]
+    }
+  ],
+
+  education: [
+    { year: "2023", title: "B.Ed.", place: "Maharaja Chhatrasal Bundelkhand University, Chhatarpur", result: "Result: 66.33%" },
+    { year: "2022", title: "PGDCA", place: "Makhanlal Chaturvedi University, Bhopal", result: "Result: 72%" },
+    { year: "2021", title: "B.Sc. Computer Science", place: "Avdhesh Pratap Singh University, Rewa", result: "Result: 61.21%" }
+  ],
+
+  training: [
+    { title: "Master Teachers Program: Foundation, Part 1", meta: "4–9 May 2026, 6 days" },
+    { title: "Master Teachers Intensive English Training", meta: "20–25 Apr 2026, 6 days" },
+    { title: "Students Retention Training", meta: "5–10 Jan 2026, 6 days" },
+    { title: "Lesson Preparedness with AI NotebookLM and ChatGPT", meta: "18 Jul 2025, online" },
+    { title: "FEA Staff Training Program", meta: "Completed 8 Oct 2024, 53 days" }
+  ],
+
+  skills: [
+    "Teaching and classroom facilitation",
+    "English communication",
+    "Digital literacy and basic computer",
+    "Lesson planning and learning materials",
+    "Classroom management",
+    "SBI feedback and mentoring",
+    "MS Office",
+    "Quiz and web app development",
+    "Google Sheets and Apps Script"
+  ]
+};
+/* ================================================== */
+
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
+const anim = document.documentElement.classList.contains("anim");
+const stagger = (node, i, step) => node.style.setProperty("--d", (i * step).toFixed(2) + "s");
+
+/* ---------- static text ---------- */
+document.title = CONFIG.name + " (" + CONFIG.brand + ") | Master Teacher and Learning-Game Builder";
+$("#brand").textContent = CONFIG.brand;
+$("#lead").textContent = CONFIG.summary;
+$("#where").textContent = CONFIG.place;
+$("#foot").textContent = "© " + new Date().getFullYear() + " " + CONFIG.name + " (" + CONFIG.brand + "). " + CONFIG.place + ".";
+
+/* ---------- hero name: letters rise one by one ---------- */
+(function () {
+  const h = $("#name");
+  h.setAttribute("aria-label", CONFIG.name);
+  const words = CONFIG.name.split(" ");
+  let i = 0;
+  words.forEach((word, wi) => {
+    const w = el("span", "w");
+    w.setAttribute("aria-hidden", "true");
+    [...word].forEach(chr => { const s = el("span", "ch", chr); s.style.setProperty("--i", i++); w.append(s); });
+    h.append(w);
+    if (wi < words.length - 1) h.append(document.createTextNode(" "));
+  });
+})();
+
+/* ---------- role typewriter ---------- */
+(function () {
+  const out = $("#role");
+  if (!anim) { out.textContent = CONFIG.roles.slice(0, 3).join(" | "); $("#caret").hidden = true; return; }
+  let r = 0, c = 0, del = false;
+  (function tick() {
+    const word = CONFIG.roles[r];
+    c += del ? -1 : 1;
+    out.textContent = word.slice(0, c);
+    let t = del ? 35 : 75;
+    if (!del && c === word.length) { t = 1700; del = true; }
+    else if (del && c === 0) { del = false; r = (r + 1) % CONFIG.roles.length; t = 350; }
+    setTimeout(tick, t);
+  })();
+})();
+
+/* ---------- stats ---------- */
+CONFIG.stats.forEach((s, i) => {
+  const li = el("li", "rv");
+  stagger(li, i, .12);
+  const b = el("b", "", (anim ? 0 : s.n) + s.suffix);
+  b.dataset.n = s.n; b.dataset.suffix = s.suffix;
+  li.append(b, el("span", "", s.label));
+  $("#stats").append(li);
+});
+
+/* ---------- projects ---------- */
+CONFIG.projects.forEach((p, i) => {
+  const li = el("li", "rv");
+  stagger(li, i, .12);
+  const card = el("article", "card");
+  const meta = el("div", "meta");
+  meta.append(el("span", "", p.when));
+  if (p.url) { const live = el("span", "live"); live.append(el("i"), document.createTextNode("Live")); meta.append(live); }
+  card.append(el("h3", "", p.title), meta, el("p", "", p.desc));
+  const tags = el("ul", "tags");
+  p.tags.forEach(t => tags.append(el("li", "", t)));
+  card.append(tags);
+  if (p.url) {
+    const foot = el("div", "foot");
+    const a = el("a", "btn small", "Open project");
+    a.href = p.url; a.target = "_blank"; a.rel = "noopener";
+    a.setAttribute("aria-label", "Open " + p.title);
+    foot.append(a); card.append(foot);
+  }
+  li.append(card);
+  $("#projects").append(li);
+});
+
+/* ---------- experience ---------- */
+CONFIG.experience.forEach(x => {
+  const li = el("li", "rv");
+  const dot = el("span", "dot"); dot.setAttribute("aria-hidden", "true");
+  li.append(dot, el("div", "when", x.when), el("h3", "", x.title));
+  if (x.org) li.append(el("p", "org", x.org));
+  const ul = el("ul", "points");
+  x.points.forEach(t => ul.append(el("li", "", t)));
+  li.append(ul);
+  $("#experience").append(li);
+});
+
+/* ---------- education, training, skills ---------- */
+CONFIG.education.forEach((e, i) => {
+  const li = el("li", "rv"); stagger(li, i, .1);
+  const c = el("div", "edu-card");
+  c.append(el("div", "yr", e.year), el("strong", "", e.title), el("span", "", e.place), el("span", "", e.result));
+  li.append(c); $("#edu").append(li);
+});
+CONFIG.training.forEach((t, i) => {
+  const li = el("li", "rv"); stagger(li, i % 2, .1);
+  const c = el("div", "edu-card");
+  c.append(el("strong", "", t.title), el("span", "", t.meta));
+  if (t.desc) c.append(el("p", "", t.desc));
+  li.append(c); $("#training").append(li);
+});
+CONFIG.skills.forEach((s, i) => {
+  const li = el("li", "rv", s); stagger(li, i, .05);
+  $("#skills").append(li);
+});
+
+/* ---------- contact ---------- */
+(function () {
+  const box = $("#contact-actions");
+  const wa = (CONFIG.phone || "").replace(/\D/g, "");
+  const add = (cls, text, href, external) => {
+    const a = el("a", cls, text); a.href = href;
+    if (external) { a.target = "_blank"; a.rel = "noopener"; }
+    box.append(a);
+  };
+  if (wa) {
+    add("btn primary", "Message on WhatsApp", "https://wa.me/" + wa + "?text=" + encodeURIComponent("Hello Sir, I would like to talk about a quiz project."), true);
+    add("btn", "Call " + (CONFIG.phoneShow || ("+" + wa)), "tel:+" + wa);
+  }
+  if (CONFIG.email) add("btn", "Email me", "mailto:" + CONFIG.email);
+  if (CONFIG.github) add("btn", "GitHub", CONFIG.github, true);
+})();
+
+/* ---------- sample quiz ---------- */
+const QUIZ = [
+  { en: "He ___ to school every day.", hi: "वह रोज़ स्कूल जाता है।", opts: ["go", "goes", "going", "gone"], a: 1,
+    why: "With he, she and it, the present-tense verb takes -s or -es: goes." },
+  { en: "I ___ a new book.", hi: "मेरे पास एक नई किताब है।", opts: ["has", "had", "having", "have"], a: 3,
+    why: "Use have with I, you, we and they. Has is only for he, she and it." },
+  { en: "Which word means hard-working?", hi: "'मेहनती' के लिए सही English word कौन सा है?", opts: ["Careless", "Fragile", "Diligent", "Generous"], a: 2,
+    why: "Diligent means working carefully and with steady effort." }
+];
+let qi = 0, score = 0, locked = false, soundOn = true, actx;
+
+function beep(ok) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    (ok ? [[660, 0], [880, .12]] : [[220, 0], [170, .14]]).forEach(([f, d]) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = ok ? "sine" : "sawtooth";
+      o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t + d);
+      g.gain.exponentialRampToValueAtTime(.15, t + d + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, t + d + .2);
+      o.connect(g).connect(actx.destination);
+      o.start(t + d); o.stop(t + d + .22);
+    });
+  } catch (e) { /* audio unavailable */ }
+}
+
+function render() {
+  const q = QUIZ[qi];
+  $("#qnum").textContent = "Question " + (qi + 1) + " of " + QUIZ.length;
+  $("#score").textContent = "Score: " + score;
+  $("#qbar").style.width = (qi / QUIZ.length * 100) + "%";
+  $("#qen").textContent = q.en;
+  $("#qhi").textContent = q.hi;
+  const box = $("#opts");
+  box.replaceChildren();
+  q.opts.forEach((t, k) => {
+    const b = el("button", "opt", t);
+    b.type = "button"; b.style.setProperty("--k", k);
+    b.addEventListener("click", () => pick(k, b));
+    box.append(b);
+  });
+  $("#explain").textContent = "";
+  $("#next").hidden = true;
+  locked = false;
+}
+
+function pick(k, btn) {
+  if (locked) return;
+  locked = true;
+  const q = QUIZ[qi];
+  const btns = [...document.querySelectorAll(".opt")];
+  btns.forEach(b => (b.disabled = true));
+  if (k === q.a) {
+    score++; btn.classList.add("good");
+    $("#explain").textContent = "Correct. " + q.why;
+    beep(true);
+  } else {
+    btn.classList.add("bad"); btns[q.a].classList.add("good");
+    $("#explain").textContent = "Not quite. " + q.why;
+    beep(false);
+  }
+  $("#score").textContent = "Score: " + score;
+  const next = $("#next");
+  next.textContent = qi === QUIZ.length - 1 ? "See result" : "Next question";
+  next.hidden = false;
+  next.focus();
+}
+
+$("#next").addEventListener("click", () => {
+  if (qi < QUIZ.length - 1) { qi++; render(); return; }
+  $("#qbar").style.width = "100%";
+  $("#play").hidden = true;
+  $("#result").hidden = false;
+  $("#rtitle").textContent = "You got " + score + " of " + QUIZ.length + " right.";
+  $("#again").focus();
+});
+$("#again").addEventListener("click", () => {
+  qi = 0; score = 0;
+  $("#result").hidden = true; $("#play").hidden = false;
+  render();
+});
+$("#sound").addEventListener("click", e => {
+  soundOn = !soundOn;
+  e.currentTarget.textContent = "Sound: " + (soundOn ? "on" : "off");
+  e.currentTarget.setAttribute("aria-pressed", String(soundOn));
+});
+render();
+
+/* ---------- motion ---------- */
+function countUp(n) {
+  const to = +n.dataset.n, suf = n.dataset.suffix || "", t0 = performance.now(), dur = 1500;
+  (function f(t) {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    n.textContent = Math.round(to * e) + suf;
+    if (k < 1) requestAnimationFrame(f);
+  })(t0);
+}
+
+(function motion() {
+  const rv = [...document.querySelectorAll(".rv")];
+  const counters = [...document.querySelectorAll("[data-n]")];
+  if (!anim || !("IntersectionObserver" in window)) {
+    rv.forEach(n => n.classList.add("in"));
+    counters.forEach(n => (n.textContent = n.dataset.n + (n.dataset.suffix || "")));
+  } else {
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: .12, rootMargin: "0px 0px -6% 0px" });
+    rv.forEach(n => io.observe(n));
+    const cio = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { countUp(e.target); cio.unobserve(e.target); } });
+    }, { threshold: .6 });
+    counters.forEach(n => cio.observe(n));
+  }
+
+  /* active nav link */
+  const links = [...document.querySelectorAll(".bar nav a")];
+  if ("IntersectionObserver" in window) {
+    const so = new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (!e.isIntersecting) return;
+        links.forEach(a => a.removeAttribute("aria-current"));
+        const a = links.find(l => l.getAttribute("href") === "#" + e.target.id);
+        if (a) a.setAttribute("aria-current", "true");
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(a => { const s = document.querySelector(a.getAttribute("href")); if (s) so.observe(s); });
+  }
+
+  /* scroll progress + timeline line */
+  const bar = $("#progress"), tl = $("#experience");
+  let queued = false;
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, scrollY / max) : 0) + ")";
+      if (anim) {
+        const r = tl.getBoundingClientRect();
+        tl.style.setProperty("--p", Math.max(0, Math.min(1, (innerHeight * .6 - r.top) / r.height)));
+      }
+    });
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* card glow + tilt (mouse only) */
+  if (matchMedia("(hover:hover)").matches) {
+    document.querySelectorAll(".card").forEach(card => {
+      card.addEventListener("pointermove", e => {
+        if (e.pointerType !== "mouse") return;
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.setProperty("--mx", (px * 100) + "%");
+        card.style.setProperty("--my", (py * 100) + "%");
+        if (anim) {
+          card.style.setProperty("--ry", ((px - .5) * 5) + "deg");
+          card.style.setProperty("--rx", ((.5 - py) * 5) + "deg");
+        }
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.setProperty("--rx", "0deg");
+        card.style.setProperty("--ry", "0deg");
+      });
+    });
+  }
+
+  /* drifting chalk dust */
+  if (anim) {
+    const cv = $("#dust"), cx = cv.getContext("2d"), dpr = Math.min(devicePixelRatio || 1, 2);
+    let w = 0, h = 0, dots = [];
+    function size() {
+      if (innerWidth === w && Math.abs(innerHeight - h) < 140) return;
+      w = innerWidth; h = innerHeight;
+      cv.width = w * dpr; cv.height = h * dpr;
+      cv.style.width = w + "px"; cv.style.height = h + "px";
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round(Math.min(60, w * h / 26000));
+      dots = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.6 + .4, s: Math.random() * .25 + .08, a: Math.random() * .3 + .08, p: Math.random() * 6.28 }));
+    }
+    size();
+    addEventListener("resize", size);
+    (function frame(t) {
+      cx.clearRect(0, 0, w, h);
+      cx.fillStyle = "#f2efe4";
+      for (const d of dots) {
+        d.y -= d.s; d.x += Math.sin(t / 2000 + d.p) * .12;
+        if (d.y < -5) { d.y = h + 5; d.x = Math.random() * w; }
+        cx.globalAlpha = d.a;
+        cx.beginPath(); cx.arc(d.x, d.y, d.r, 0, 6.283); cx.fill();
+      }
+      requestAnimationFrame(frame);
+    })(0);
+  }
+})();
+</script>
+</body>
+</html>
